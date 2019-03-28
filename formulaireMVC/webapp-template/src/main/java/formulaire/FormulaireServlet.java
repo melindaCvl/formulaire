@@ -14,7 +14,7 @@ import exception.ExceptionChamp;
 public class FormulaireServlet extends HttpServlet {
 	
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
 		req.setCharacterEncoding("utf-8");
 		
 		// Récupération des champs (d'une manière ou d'une autre)
