@@ -24,8 +24,10 @@ public class FormulaireServlet extends HttpServlet {
 		String approbation = req.getParameter("approbation");		
 		try {
 			verifierChamps(email, mdp, mdpBis, approbation);
+			// Réussite
 		} catch (ExceptionChamp exc) {
-			
+			// Echec - Traiter
+			String msgErreur = exc.getMessage();
 		}
 	}
 	
@@ -50,6 +52,11 @@ public class FormulaireServlet extends HttpServlet {
 		
 		if (!estCorrect) {
 			throw new ExceptionChamp("Merci de bien vouloir saisir une adresse mail correcte.");
+		}
+		
+		UtilisateurDAO interactionBDD = new UtilisateurDAO();
+		if (interactionBDD.verifierExistence(email)) {
+			throw new ExceptionChamp("Compte déjà existant.");
 		}
 		
 		// Vérification du mot de passe
