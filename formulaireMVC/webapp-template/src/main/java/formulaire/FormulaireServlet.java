@@ -1,6 +1,9 @@
 package formulaire;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,66 +15,78 @@ import exception.ExceptionChamp;
 
 @WebServlet("/formulaire")
 public class FormulaireServlet extends HttpServlet {
-	
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
-		req.setCharacterEncoding("utf-8");
-		
-		// Récupération des champs (d'une manière ou d'une autre)
-		String email = req.getParameter("email");
-		String mdp = req.getParameter("password");
-		String mdpBis = req.getParameter("passwordBis");
-		String approbation = req.getParameter("approbation");		
-		try {
-			verifierChamps(email, mdp, mdpBis, approbation);
-			// Réussite
-		} catch (ExceptionChamp exc) {
-			// Echec - Traiter
-			String msgErreur = exc.getMessage();
-		}
-	}
-	
-	/**
-	 * Vérifie les champs saisis par l'utilisateur
-	 * @param email
-	 * @param mdp
-	 * @param mdpBis
-	 * @param approbation
-	 * @return
-	 * @throws ExceptionChamp
-	 */
-	private void verifierChamps(String email, String mdp, String mdpBis, String approbation) throws ExceptionChamp {
-		// Vérification de l'émail
-		boolean estCorrect = false;
-		for(int ind = 0; ind < email.length(); ind++) {
-			String unChar = email.substring(ind, ind + 1);
-			if(unChar.equals("@")) {
-				estCorrect = true;
-			}
-		}
-		
-		if (!estCorrect) {
-			throw new ExceptionChamp("Merci de bien vouloir saisir une adresse mail correcte.");
-		}
-		
-		UtilisateurDAO interactionBDD = new UtilisateurDAO();
-		if (interactionBDD.verifierExistence(email)) {
-			throw new ExceptionChamp("Compte déjà existant.");
-		}
-		
-		// Vérification du mot de passe
-		if (mdp.length() < 8) {
-			throw new ExceptionChamp("Le mot de passe doit contenir au moins 8 caractères.");
-		}
-		
-		// Comparaison des 2 mots de passe
-		if (!mdp.equals(mdpBis)) {
-			throw new ExceptionChamp("Le mot de passe et sa confirmation ne sont pas identiques.");
-		}
-		
-		// Vérification de l'approbation des conditions d'utilisateurs
-		if (approbation == null) {
-			throw new ExceptionChamp("Merci de bien vouloir approuver les conditions générales du site.");
-		}
-	}
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setCharacterEncoding("utf-8");
+
+        // Récupération des champs (d'une manière ou d'une autre)
+        String email = req.getParameter("email");
+        String mdp = req.getParameter("password");
+        String mdpBis = req.getParameter("passwordBis");
+        String approbation = req.getParameter("approbation");
+        try {
+            this.verifierChamps(email, mdp, mdpBis, approbation);
+            // Réussite
+
+/** TODO afficher message si verifCHamp OK manque a retourné boolean ? **/
+            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+            DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+            Date date = new Date();
+
+            resp.setContentType("html");
+            resp.setCharacterEncoding("utf-8");
+            resp.getWriter().write("Votre inscription a bien été prise en compte le " + dateFormat.format(date)
+                    + " à " + dateFormat.format(timeFormat) + " pour l'adresse mail " + email + " .");
+
+        } catch (ExceptionChamp exc) {
+            // Echec - Traiter
+            String msgErreur = exc.getMessage();
+        }
+    }
+
+    /**
+     * Vérifie les champs saisis par l'utilisateur
+     *
+     * @param email
+     * @param mdp
+     * @param mdpBis
+     * @param approbation
+     * @return
+     * @throws ExceptionChamp
+     */
+    private void verifierChamps(String email, String mdp, String mdpBis, String approbation) throws ExceptionChamp {
+        // Vérification de l'émail
+        boolean estCorrect = false;
+        for (int ind = 0; ind < email.length(); ind++) {
+            String unChar = email.substring(ind, ind + 1);
+            if (unChar.equals("@")) {
+                estCorrect = true;
+            }
+        }
+
+        if (!estCorrect) {
+            throw new ExceptionChamp("Merci de bien vouloir saisir une adresse mail correcte.");
+        }
+
+        UtilisateurDAO interactionBDD = new UtilisateurDAO();
+        if (interactionBDD.verifierExistence(email)) {
+            throw new ExceptionChamp("Compte déjà existant.");
+        }
+
+        // Vérification du mot de passe
+        if (mdp.length() < 8) {
+            throw new ExceptionChamp("Le mot de passe doit contenir au moins 8 caractères.");
+        }
+
+        // Comparaison des 2 mots de passe
+        if (!mdp.equals(mdpBis)) {
+            throw new ExceptionChamp("Le mot de passe et sa confirmation ne sont pas identiques.");
+        }
+
+        // Vérification de l'approbation des conditions d'utilisateurs
+        if (approbation == null) {
+            throw new ExceptionChamp("Merci de bien vouloir approuver les conditions générales du site.");
+        }
+    }
 }
