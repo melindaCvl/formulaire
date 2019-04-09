@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import exception.ExceptionChamp;
+import jdk.jshell.execution.Util;
 
 @WebServlet("/formulaire")
 public class FormulaireServlet extends HttpServlet {
@@ -96,11 +97,13 @@ public class FormulaireServlet extends HttpServlet {
      * $			#end of the line
      */
     private boolean isEmail(String email) {
+        UtilisateurDAO uDao = new UtilisateurDAO();
+
         String emailRegex = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
                 + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
         Pattern p = Pattern.compile(emailRegex);
         Matcher m = p.matcher(email);
-        return m.matches();
+        return m.matches() && uDao.verifierExistence(email);
     }
 
     /**
@@ -117,10 +120,7 @@ public class FormulaireServlet extends HttpServlet {
      * @return
      */
     private boolean isPassword(String password) {
-        String passwordRegex = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{8,})";
-        Pattern p = Pattern.compile(passwordRegex);
-        Matcher m = p.matcher(password);
-        return m.matches();
+        return password.length() >= 8;
     }
 
 
