@@ -42,18 +42,18 @@ public class FormulaireServlet extends HttpServlet {
                 if (this.isEmail(email)) {
                     req.setAttribute("email", email);
                 } else {
-                    req.setAttribute("errorEmail", "adresse email incorrecte ");
+                    req.setAttribute("errorEmail", "Adresse email incorrecte <br/>");
                 }
                 if (!this.isPassword(password)) {
-                    req.setAttribute("errorPassword", "mot de passe incorrecte ");
+                    req.setAttribute("errorPassword", "Mot de passe incorrect <br/>");
                 }
                 if (!this.isSamePassword(password, passwordBis)) {
-                    req.setAttribute("errorSamePassword", "les deux mots de passes sont incorrectes ");
+                    req.setAttribute("errorSamePassword", "Les deux mots de passes sont incorrects <br/>");
                 }
                 if (this.isApprobation(approbation)) {
                     req.setAttribute("approbation", "checked");
                 } else {
-                    req.setAttribute("errorApprobation", "vous n'avez pas approuvé les conditions générales de ce site");
+                    req.setAttribute("errorApprobation", "Vous n'avez pas approuvé les conditions générales de ce site <br/>");
                 }
                 req.getRequestDispatcher("index.jsp").forward(req, resp);
             }
@@ -62,51 +62,6 @@ public class FormulaireServlet extends HttpServlet {
             resp.getWriter().write("erreur: " + e);
         }
 
-    }
-
-    /**
-     * Vérifie les champs saisis par l'utilisateur
-     *
-     * @param email
-     * @param mdp
-     * @param mdpBis
-     * @param approbation
-     * @return
-     * @throws ExceptionChamp
-     */
-    private void verifierChamps(String email, String mdp, String mdpBis, String approbation) throws ExceptionChamp {
-        // Vérification de l'émail
-        boolean estCorrect = false;
-        for (int ind = 0; ind < email.length(); ind++) {
-            String unChar = email.substring(ind, ind + 1);
-            if (unChar.equals("@")) {
-                estCorrect = true;
-            }
-        }
-
-        if (!estCorrect) {
-            throw new ExceptionChamp("Merci de bien vouloir saisir une adresse mail correcte.");
-        }
-
-        UtilisateurDAO interactionBDD = new UtilisateurDAO();
-        if (interactionBDD.verifierExistence(email)) {
-            throw new ExceptionChamp("Compte déjà existant.");
-        }
-
-        // Vérification du mot de passe
-        if (mdp.length() < 8) {
-            throw new ExceptionChamp("Le mot de passe doit contenir au moins 8 caractères.");
-        }
-
-        // Comparaison des 2 mots de passe
-        if (!mdp.equals(mdpBis)) {
-            throw new ExceptionChamp("Le mot de passe et sa confirmation ne sont pas identiques.");
-        }
-
-        // Vérification de l'approbation des conditions d'utilisateurs
-        if (approbation == null) {
-            throw new ExceptionChamp("Merci de bien vouloir approuver les conditions générales du site.");
-        }
     }
 
     /**
@@ -176,14 +131,6 @@ public class FormulaireServlet extends HttpServlet {
      */
     private boolean isSamePassword(String password, String passwordBis) {
         return (password.equals(passwordBis));
-    }
-
-
-    /**
-     * @return
-     */
-    private boolean isApprobation() {
-        return isApprobation();
     }
 
     /**

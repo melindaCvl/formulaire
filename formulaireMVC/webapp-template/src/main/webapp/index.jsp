@@ -22,7 +22,7 @@
         <div class="agileits-top">
             <form action="./formulaire" method="post">
                 <c:if test = "${not empty errorEmail || not empty errorPassword || not empty errorSamePassword || not empty errorApprobation}">
-                    <div class="warning"><c:out value="${errorEmail} <br/> ${errorPassword} <br/> ${errorSamePassword} <br/> ${errorApprobation}" escapeXml="false"/></div>
+                    <div class="warning"><c:out value="${errorEmail} ${errorPassword} ${errorSamePassword} ${errorApprobation}" escapeXml="false"/></div>
                 </c:if>
 <%--                <div class="warning">${errorEmail} ${errorPassword} ${errorSamePassword} ${errorApprobation}</div>--%>
                 <input class="text email" type="text" name="email" placeholder="Email" value="${email}">
