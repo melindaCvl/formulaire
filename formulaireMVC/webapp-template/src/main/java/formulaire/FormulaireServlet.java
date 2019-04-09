@@ -28,7 +28,7 @@ public class FormulaireServlet extends HttpServlet {
         try {
 
             if (u.testChamps(email, password, passwordBis, approbation)) {
-            	succes(resp, email);
+            	succes(req, resp, email);
             } else {
             	echec(req, resp, u, email, password, passwordBis, approbation);
             }
@@ -38,7 +38,7 @@ public class FormulaireServlet extends HttpServlet {
         }
     }
     
-    private void succes(HttpServletResponse resp, String email) {
+    private void succes(HttpServletRequest req, HttpServletResponse resp, String email) {
         Date today = new Date();
         DateFormat fullDateFormat = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.MEDIUM);
 
@@ -46,8 +46,10 @@ public class FormulaireServlet extends HttpServlet {
         resp.setCharacterEncoding("utf-8");
         
         try {
-	        resp.getWriter().write("Votre inscription a bien été prise en compte le " + fullDateFormat.format(today)
-	                + " pour l'adresse mail " + email + " .");
+	        String validation = "Votre inscription a bien été prise en compte le " + fullDateFormat.format(today)
+	                + " pour l'adresse mail " + email + " .";
+	        req.setAttribute("validation", validation);
+	        req.getRequestDispatcher("validation.jsp").forward(req, resp);
         } catch (Exception e) {}
     }
     
@@ -58,10 +60,10 @@ public class FormulaireServlet extends HttpServlet {
             req.setAttribute("errorEmail", "Adresse email incorrecte <br/>");
         }
         if (!u.mdpCorrect(password)) {
-            req.setAttribute("errorPassword", "Mot de passe incorrect <br/>");
+            req.setAttribute("errorPassword", "Mot de passe trop court (minimum 8 caractères) <br/>");
         }
         if (!u.mdpIdentiques(password, passwordBis)) {
-            req.setAttribute("errorSamePassword", "Les deux mots de passes sont incorrects <br/>");
+            req.setAttribute("errorSamePassword", "Les deux mots de passes ne sont pas identiques <br/>");
         }
         if (u.approbationOk(approbation)) {
             req.setAttribute("approbation", "checked");
